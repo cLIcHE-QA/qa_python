@@ -42,11 +42,9 @@ class TestBooksCollector:
         collector.set_book_genre('Оно', 'Ужасы')
         assert collector.get_book_genre('Оно') == 'Ужасы'
 
-    def test_get_books_genre_one_genre_shows_success(self):
+    def test_get_books_genre_empty_list_shows_success(self):
         collector = BooksCollector()
-        collector.add_new_book('Приключения Паддингтона')
-        collector.set_book_genre('Приключения Паддингтона', 'Мультфильмы')
-        assert collector.books_genre['Приключения Паддингтона'] == 'Мультфильмы'
+        assert collector.get_books_genre() == {}
 
     @pytest.mark.parametrize(
         'book_name, genre, expected_result',
@@ -63,20 +61,28 @@ class TestBooksCollector:
 
     def test_get_books_with_specific_genre_comedy_shows_only_specific_genre(self):
         collector = BooksCollector()
-        collector.books_genre = {'Дюна': 'Фантастика', 'Особо опасен': 'Детективы',
-                                 'Дневник Бриджит Джонс': 'Комедии'}
+        collector.add_new_book('Дюна')
+        collector.add_new_book('Зодиак')
+        collector.add_new_book('Дневник Бриджит Джонс')
+        collector.set_book_genre('Дюна', 'Фантастика')
+        collector.set_book_genre('Зодиак', 'Детективы')
+        collector.set_book_genre('Дневник Бриджит Джонс', 'Комедии')
         assert collector.get_books_with_specific_genre('Комедии') == ['Дневник Бриджит Джонс']
 
     def test_get_book_genre_found_genre_success_found(self):
         collector = BooksCollector()
-        collector.books_genre = {'О дивный новый мир': 'Фантастика'}
-        genre = collector.get_book_genre('О дивный новый мир')
-        assert genre == 'Фантастика'
+        collector.add_new_book('О дивный новый мир')
+        collector.set_book_genre('О дивный новый мир', 'Фантастика')
+        assert collector.books_genre.get('О дивный новый мир') == 'Фантастика'
 
     def test_get_books_for_children_get_one_book_shows_success(self):
         collector = BooksCollector()
-        collector.books_genre = {'Хроники Нарнии': 'Фантастика', 'Особо опасен': 'Детективы',
-                                 'Ходячий замок': 'Мультфильмы'}
+        collector.add_new_book('Хроники Нарнии')
+        collector.add_new_book('Особо опасен')
+        collector.add_new_book('Ходячий замок')
+        collector.set_book_genre('Хроники Нарнии', 'Фантастика')
+        collector.set_book_genre('Особо опасен', 'Детективы')
+        collector.set_book_genre('Ходячий замок', 'Мультфильмы')
         assert collector.get_books_for_children() == ['Хроники Нарнии', 'Ходячий замок']
 
     def test_add_book_in_favorites_add_one_book_added_to_list(self):
@@ -87,7 +93,12 @@ class TestBooksCollector:
 
     def test_delete_book_from_favorites_delete_two_books_delisted(self):
         collector = BooksCollector()
-        collector.favorites = ['Исчезнувшая', '451 градус по Фаренгейту', 'Кладбище домашних жывотных']
+        collector.add_new_book('Исчезнувшая')
+        collector.add_new_book('451 градус по Фаренгейту')
+        collector.add_new_book('Кладбище домашних животных')
+        collector.add_book_in_favorites('Исчезнувшая')
+        collector.add_book_in_favorites('451 градус по Фаренгейту')
+        collector.add_book_in_favorites('Кладбище домашних животных')
         collector.delete_book_from_favorites('451 градус по Фаренгейту')
         collector.delete_book_from_favorites('Исчезнувшая')
-        assert collector.favorites == ['Кладбище домашних жывотных']
+        assert collector.get_list_of_favorites_books() == ['Кладбище домашних животных']
