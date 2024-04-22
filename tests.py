@@ -40,12 +40,13 @@ class TestBooksCollector:
         collector = BooksCollector()
         collector.add_new_book('Оно')
         collector.set_book_genre('Оно', 'Ужасы')
-        assert collector.books_genre['Оно'] == 'Ужасы'
+        assert collector.get_book_genre('Оно') == 'Ужасы'
 
-    def test_get_books_genre_empty_list_shows_success(self):
+    def test_get_books_genre_one_genre_shows_success(self):
         collector = BooksCollector()
-        books_genre = collector.get_books_genre()
-        assert books_genre == {}
+        collector.add_new_book('Приключения Паддингтона')
+        collector.set_book_genre('Приключения Паддингтона', 'Мультфильмы')
+        assert collector.books_genre['Приключения Паддингтона'] == 'Мультфильмы'
 
     @pytest.mark.parametrize(
         'book_name, genre, expected_result',
