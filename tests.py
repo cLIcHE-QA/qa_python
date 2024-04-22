@@ -34,7 +34,7 @@ class TestBooksCollector:
         collector = BooksCollector()
         long_book_name = 'Семен Бобров: Рассвет полночи. Херсонида. В 2-х томах. Том 1'
         collector.add_new_book(long_book_name)
-        assert long_book_name not in collector.books_genre
+        assert long_book_name not in collector.get_books_genre()
 
     def test_set_book_genre_add_genre_to_book_shows_success(self):
         collector = BooksCollector()
@@ -48,17 +48,17 @@ class TestBooksCollector:
         assert books_genre == {}
 
     @pytest.mark.parametrize(
-        'book_name,expected_genre',
+        'book_name, genre, expected_result',
         [
-            [{'Хроники Нарнии', 'Фантастика'}, {'Хроники Нарнии', 'Фантастика'}],
-            [{'Неизвестная книга', None}, {'Неизвестная книга', None}],
+            ['Хроники Нарнии', 'Фантастика', {'Хроники Нарнии': 'Фантастика'}],
+            ['Неизвестная книга', None, {'Неизвестная книга': ''}]
         ]
     )
-    def test_get_book_genre_get_two_books_shows_success(self, book_name, expected_genre):
+    def test_get_book_genre_get_two_books_shows_success(self, book_name, genre, expected_result):
         collector = BooksCollector()
-        collector.books_genre = book_name
-        books_genre = collector.get_books_genre()
-        assert books_genre == expected_genre
+        collector.add_new_book(book_name)
+        collector.set_book_genre(book_name, genre)
+        assert collector.get_books_genre() == expected_result
 
     def test_get_books_with_specific_genre_comedy_shows_only_specific_genre(self):
         collector = BooksCollector()
